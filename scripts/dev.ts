@@ -40,6 +40,11 @@ async function main(): Promise<void> {
   const backend = spawn('tsx', ['watch', 'src/main.ts'], {
     env: {
       ...process.env,
+      // Tell Node's resolver to honor the `openalice-source` export
+      // condition on @traderalice/* workspace packages, so backend imports
+      // hit `packages/*/src/*.ts` directly — no need for those packages to
+      // be pre-built into `dist/` before `pnpm dev`.
+      NODE_OPTIONS: `${process.env['NODE_OPTIONS'] ?? ''} --conditions=openalice-source`.trim(),
       OPENALICE_WEB_PORT: String(webPort),
       OPENALICE_MCP_PORT: String(mcpPort),
     },
