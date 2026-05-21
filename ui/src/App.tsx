@@ -96,7 +96,7 @@ function AppShell() {
     panelIds,
   })
   const fallbackLayout: Record<string, number> = showSidebarPanel
-    ? { sidebar: 14, main: 86 }
+    ? { sidebar: 20, main: 80 }
     : { main: 100 }
 
   const mainContent = (
@@ -151,7 +151,7 @@ function AppShell() {
         >
           {showSidebarPanel && section && (
             <>
-              <Panel id="sidebar" defaultSize={240} minSize={150} maxSize={500}>
+              <Panel id="sidebar" defaultSize={20} minSize="200px" maxSize="500px">
                 <Sidebar
                   title={section.title}
                   actions={section.Actions ? <section.Actions /> : undefined}
