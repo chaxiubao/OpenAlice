@@ -30,6 +30,7 @@ import type { CurrencyClientLike } from '@/domain/market-data/client/types.js'
 import { buildSDKCredentials } from '@/domain/market-data/credential-map.js'
 import { OpenBBCurrencyClient } from '@/domain/market-data/client/openbb-api/currency-client.js'
 import { createTradingRoutes } from './http/routes-trading.js'
+import { createSimulatorRoutes } from './http/routes-simulator.js'
 import type { EngineContext } from '@/core/types.js'
 
 const UTA_PORT = Number(process.env['OPENALICE_UTA_PORT'] ?? 47333)
@@ -128,6 +129,11 @@ async function main(): Promise<void> {
     snapshotService,
   } as unknown as EngineContext
   app.route('/api/trading', createTradingRoutes(tradingCtx))
+  // Simulator endpoints — MockBroker-only god-view operations the
+  // /dev/simulator UI tab drives. Lives next to the trading routes
+  // because both need direct access to UTA's in-process MockBroker
+  // instances. Alice BFF proxies `/api/simulator/*` to here.
+  app.route('/api/simulator', createSimulatorRoutes(tradingCtx))
 
   // ==================== Bind + shutdown ====================
 
