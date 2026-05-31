@@ -339,6 +339,44 @@ export const DEEPSEEK: PresetDef = {
   },
 }
 
+
+// ==================== Third-party: NVIDIA NIM ======================
+
+export const NVIDIA: PresetDef = {
+  id: 'nvidia',
+  label: 'NVIDIA NIM',
+  description: 'NVIDIA NIM models via OpenAI-compatible API — Llama, Nemotron, DeepSeek R1',
+  category: 'third-party',
+  defaultName: 'NVIDIA NIM (API Key)',
+  hint: 'Get your API key at build.nvidia.com. Optimized inference for Llama, DeepSeek R1, and Nemotron models. Best throughput for automated trading agents.',
+  zodSchema: z.object({
+    backend: z.literal('vercel-openai'),
+    loginMethod: z.literal('api-key'),
+    model: z.string().default('meta/llama-3.3-70b-instruct').describe('Model'),
+    apiKey: z.string().min(1).describe('NVIDIA NIM API key'),
+    baseUrl: z.string().default('https://integrate.api.nvidia.com/v1').describe('API endpoint'),
+  }),
+  endpoints: [
+    { id: 'https://integrate.api.nvidia.com/v1', label: 'NVIDIA NIM (Global)' },
+  ],
+  models: [
+    { id: 'meta/llama-3.3-70b-instruct', label: 'Llama 3.3 70B Instruct (recommended)' },
+    { id: 'meta/llama-3.1-70b-instruct', label: 'Llama 3.1 70B Instruct' },
+    { id: 'meta/llama-3.1-8b-instruct', label: 'Llama 3.1 8B Instruct (fast/cheap)' },
+    { id: 'nvidia/llama-3.1-nemotron-70b-instruct', label: 'Nemotron 70B Instruct' },
+    { id: 'nvidia/llama-3.1-nemotron-ultra-253b-v1', label: 'Nemotron Ultra 253B' },
+    { id: 'deepseek-ai/deepseek-r1', label: 'DeepSeek R1 (NVIDIA hosted)' },
+  ],
+  writeOnlyFields: ['apiKey'],
+  sdkAdapters: {
+    available: [
+      { id: 'vercel-openai', config: (c) => ({ apiKey: c.apiKey, baseURL: c.baseUrl }) },
+      { id: 'agent-sdk', config: (c) => ({ apiKey: c.apiKey, baseUrl: c.baseUrl, loginMethod: 'api-key' }) },
+    ],
+    test: 'vercel-openai',
+  },
+}
+
 // ==================== Custom ====================
 
 export const CUSTOM: PresetDef = {
@@ -370,5 +408,6 @@ export const PRESET_CATALOG: PresetDef[] = [
   GLM,
   KIMI,
   DEEPSEEK,
+  NVIDIA,
   CUSTOM,
 ]
